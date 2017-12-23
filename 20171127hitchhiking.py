@@ -50,12 +50,10 @@ class DBconn:
                 user_password = input('Enter your password: ')
                 if user_access.upper() == 'D':
                     self.cursor.execute('select id_d, login_d, password_d from drivers_logins where login_d = "'+ user_login +'" and password_d = "'+ user_password +'";')
-                    results = self.cursor.fetchall()  # You can use fetchone because login is unique. 
+                    results = self.cursor.fetchone()  
                     if results:
                         for row in results:
                             sql_user_id = row[0]
-                            sql_user_login = row[1]  # You don't use it anywhere.
-                            sql_user_password = row[2]  # You don't use it anywhere.
                         l1 = Driver(sql_user_id)
                         l1.menu_driver()
                         break
@@ -63,12 +61,10 @@ class DBconn:
                         print('You gave incorrect credentials. Try again')
                 elif user_access.upper() == 'H':
                     self.cursor.execute( 'select id_h, login_h, password_h from hikers_logins where login_h = "'+ user_login +'" and password_h = "'+ user_password +'";')
-                    results = self.cursor.fetchall()  # You can use fetchone because login is unique.
+                    results = self.cursor.fetchone()  
                     if results:
                         for row in results:
                             sql_user_id = row[0]
-                            sql_user_login = row[1]  # You don't use it anywhere.
-                            sql_user_password = row[2]  # You don't use it anywhere.
                         l1 = Hiker(sql_user_id)
                         l1.menu_hiker()
                         break
@@ -103,7 +99,7 @@ class DBconn:
                                 self.cursor.execute('insert into drivers (name_d, surname_d, sex_d, town_d, birth_date_d, mail_d, car_brand_d) values (%s, %s, %s, %s, %s, %s, %s);',(name_d, surname_d, sex_d, town_d, birth_date_d, mail_d, car_brand_d))
                                 self.conn.commit()
                                 self.cursor.execute('select max(id_d) from drivers_logins;')
-                                id_d = self.cursor.fetchall() # You can use fetchone.
+                                id_d = self.cursor.fetchone()
                                 self.cursor.execute('update drivers_logins set login_d = %s, password_d = %s where id_d = %s;',(user_login, user_password, id_d))
                                 self.conn.commit()
                                 print('Your account has been created. Your id is ' + id_d)
@@ -132,7 +128,7 @@ class DBconn:
                                 self.cursor.execute('insert into hikers (name_h, surname_h, sex_h, town_h, birth_date_h, mail_h) values (%s, %s, %s, %s, %s, %s);',(name_h, surname_h, sex_h, town_h, birth_date_h, mail_h))
                                 self.conn.commit()
                                 self.cursor.execute('select max(id_h) from hikers_logins;')
-                                id_h = self.cursor.fetchall()  # You can use fetchone
+                                id_h = self.cursor.fetchone()  
                                 self.cursor.execute('update hikers_logins set login_h = %s, password_h = %s where id_h = %s;',(user_login, user_password, id_h))
                                 self.conn.commit()
                                 print('Your account has been created. Your id is ' + id_h)
@@ -160,7 +156,8 @@ class Hiker:
         self.cursor = self.conn.cursor()  
 
     def menu_hiker(self):    
-        print('You are connected with database.') # zostawione do testów
+        print('You are connected with database.') 
+        
         while True:          
             i = input('\nWhat do you want to do? \n(S)Search for any free car\t(SS)Special search requirements\t(B)Book trip\t(C)Cancel booking\t(D)Delete account\t(Q)Quit: ')
             if i.upper() == 'S':
@@ -283,7 +280,7 @@ class Driver:
 
     def menu_driver(self):      
         self.cursor = self.conn.cursor()
-        print('You are connected with database.') # zostawione do testów
+        print('You are connected with database.') 
         while(True):
             i = input('\nWhat do you want to do? \n(A)Add a new trip\t(R)Reject hiker\'s application\t(C)Cancel trip\t(D)Delete account\t(Q)Quit: ')
             if i.upper() == 'A':
@@ -308,7 +305,7 @@ class Driver:
         self.cursor.execute('insert into trips (town_start, town_finish, date_start, date_finish, free_place, points_in_km) values (%s, %s, %s, %s, "1", %s);', (town_start, town_finish, date_start, date_finish, points_in_km))
         self.conn.commit()
         self.cursor.execute('select max(id_t) from trips')
-        id_t = self.cursor.fetchall()  # You can use fetchone
+        id_t = self.cursor.fetchone()  
         self.cursor.execute('insert into trips_drivers_hikers (id_t, id_d) values (%s, %s)', (id_t, self.user_id))
         self.conn.commit()
         print('\nTrip has been added.')
@@ -351,6 +348,4 @@ class Driver:
         exit()
                                 
 db = DBconn()
-
-# TO DO:
 
