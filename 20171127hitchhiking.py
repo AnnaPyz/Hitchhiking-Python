@@ -5,8 +5,6 @@ from passwords import *
 class DBconn:
     def __init__(self):
         self.conn = pymysql.connect(host, conntype, password, database)
-        #self.conn = pymysql.connect('localhost','root','Welcome123','hitchhiking')#w razie potrzeby dopisać 3 przy nazwie bazy danych            
-        #self.conn=conn
         self.cursor = self.conn.cursor()
         print('''
  __      __   _                    _         _  _ _ _      _    _    _ _   _           
